@@ -1,0 +1,23 @@
+{
+  "name": "kebal",
+  "version": "1.0.0",
+  "description": "Kebal's Business Card",
+  "main": "index.js",
+  "bin": {
+    "kebal": "./cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Kebalicious",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "boxen": "^8.0.1",
+    "chalk": "^5.4.1",
+    "minimist": "^1.2.8",
+    "prettyjson": "^1.2.5"
+  }
+}
