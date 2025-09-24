@@ -32,10 +32,8 @@ function displayContact() {
 }
 
 function displayProjects() {
-    // Show featured projects first
-    console.log(chalk.yellow.bold('🚀 Featured Projects:'))
-    const featuredProjects = data.projects.filter(project => project.featured)
-    featuredProjects.forEach(project => {
+    console.log(chalk.yellow.bold('🚀 Projects:'))
+    data.projects.forEach(project => {
         console.log(chalk.cyan(`   [${project.id}] ${project.name}`) + chalk.gray(` (${project.category})`))
         console.log(chalk.gray(`       ${project.description}`))
         console.log(chalk.green(`       Tech: ${project.technologies.join(', ')}`))
@@ -51,25 +49,6 @@ function displayProjects() {
         }
         console.log()
     })
-
-    // Show other projects
-    const otherProjects = data.projects.filter(project => !project.featured)
-    if (otherProjects.length > 0) {
-        console.log(chalk.yellow.bold('📋 Other Projects:'))
-        otherProjects.forEach(project => {
-            console.log(chalk.cyan(`   [${project.id}] ${project.name}`) + chalk.gray(` (${project.category})`))
-            console.log(chalk.gray(`       ${project.description}`))
-            console.log(chalk.green(`       Tech: ${project.technologies.join(', ')}`))
-            console.log(chalk.magenta(`       Status: ${project.status}`))
-            if (project.completed_date) {
-                console.log(chalk.yellow(`       Target: ${project.completed_date}`))
-            }
-            if (project.link) {
-                console.log(chalk.blue(`       Link: ${project.link}`))
-            }
-            console.log()
-        })
-    }
 }
 
 function displayExperience() {
@@ -184,56 +163,7 @@ async function showMainMenu() {
     return action
 }
 
-async function showProjectDetails() {
-    const projectChoices = data.projects.map(project => ({
-        name: `${project.name} (${project.category}) - ${project.status}`,
-        value: project.id
-    }))
-    projectChoices.push({ name: '← Back to main menu', value: 'back' })
 
-    const { projectId } = await inquirer.prompt([
-        {
-            type: 'list',
-            name: 'projectId',
-            message: 'Which project would you like to know more about?',
-            choices: projectChoices
-        }
-    ])
-
-    if (projectId === 'back') return 'menu'
-
-    const project = data.projects.find(p => p.id === projectId)
-    if (project) {
-        console.log()
-        console.log(chalk.yellow.bold(`🚀 ${project.name}`))
-        console.log(chalk.gray(`   Category: ${project.category}`))
-        console.log(chalk.white(`   ${project.description}`))
-        console.log()
-        console.log(chalk.cyan('   Technologies Used:'))
-        project.technologies.forEach(tech => {
-            console.log(chalk.green(`     • ${tech}`))
-        })
-        console.log()
-        console.log(chalk.cyan(`   Status: `) + chalk.magenta(project.status))
-        if (project.completed_date) {
-            console.log(chalk.cyan(`   Completed: `) + chalk.yellow(project.completed_date))
-        }
-        if (project.featured) {
-            console.log(chalk.cyan(`   Featured: `) + chalk.green('✓ Yes'))
-        }
-        if (project.link) {
-            console.log(chalk.cyan(`   Link: `) + chalk.blue(project.link))
-        }
-        if (project.github) {
-            console.log(chalk.cyan(`   GitHub: `) + chalk.blue(project.github))
-        }
-        console.log()
-        
-        await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
-    }
-    
-    return 'projects'
-}
 
 async function runInteractiveMode() {
     let currentView = 'menu'
@@ -247,7 +177,8 @@ async function runInteractiveMode() {
             case 'projects':
                 displayHeader()
                 displayProjects()
-                currentView = await showProjectDetails()
+                await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
+                currentView = 'menu'
                 break
             case 'experience':
                 displayHeader()
