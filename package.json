@@ -1,6 +1,6 @@
 {
   "name": "kebal",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Kebal's Business Card",
   "main": "index.js",
   "bin": {
