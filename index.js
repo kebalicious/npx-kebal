@@ -137,7 +137,7 @@ function displayAboutMe() {
 
 async function showMainMenu() {
     const choices = [
-        { name: '1. �‍💻 About Me', value: 'about' },
+        { name: '1. ‍💻 About Me', value: 'about' },
         { name: '2. ⚡ Technical Skills', value: 'skills' },
         { name: '3. 💼 Work Experience', value: 'experience' },
         { name: '4. 🎓 Education Background', value: 'education' },
@@ -159,6 +159,15 @@ async function showMainMenu() {
             loop: false
         }
     ])
+
+    // If user selects exit, show thanks message immediately
+    if (action === 'exit') {
+        console.clear()
+        console.log()
+        console.log(chalk.green.bold('Thanks for checking out my profile! 👋'))
+        console.log(chalk.cyan('Feel free to reach out anytime.'))
+        console.log()
+    }
 
     return action
 }
@@ -210,15 +219,13 @@ async function runInteractiveMode() {
                 await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
                 currentView = 'menu'
                 break
+            case 'exit':
+                currentView = 'exit'
+                break
             default:
                 currentView = 'exit'
         }
     }
-    
-    console.log()
-    console.log(chalk.green.bold('Thanks for checking out my profile! 👋'))
-    console.log(chalk.cyan('Feel free to reach out anytime.'))
-    console.log()
 }
 
 module.exports = ({ json }) => {
