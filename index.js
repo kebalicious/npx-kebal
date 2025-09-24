@@ -32,17 +32,44 @@ function displayContact() {
 }
 
 function displayProjects() {
+    // Show featured projects first
     console.log(chalk.yellow.bold('🚀 Featured Projects:'))
-    data.projects.forEach(project => {
-        console.log(chalk.cyan(`   [${project.id}] ${project.name}`))
+    const featuredProjects = data.projects.filter(project => project.featured)
+    featuredProjects.forEach(project => {
+        console.log(chalk.cyan(`   [${project.id}] ${project.name}`) + chalk.gray(` (${project.category})`))
         console.log(chalk.gray(`       ${project.description}`))
         console.log(chalk.green(`       Tech: ${project.technologies.join(', ')}`))
         console.log(chalk.magenta(`       Status: ${project.status}`))
-        if (project.link !== 'Private Repository' && project.link !== 'Coming Soon') {
+        if (project.completed_date) {
+            console.log(chalk.yellow(`       Completed: ${project.completed_date}`))
+        }
+        if (project.link) {
             console.log(chalk.blue(`       Link: ${project.link}`))
+        }
+        if (project.github) {
+            console.log(chalk.blue(`       GitHub: ${project.github}`))
         }
         console.log()
     })
+
+    // Show other projects
+    const otherProjects = data.projects.filter(project => !project.featured)
+    if (otherProjects.length > 0) {
+        console.log(chalk.yellow.bold('📋 Other Projects:'))
+        otherProjects.forEach(project => {
+            console.log(chalk.cyan(`   [${project.id}] ${project.name}`) + chalk.gray(` (${project.category})`))
+            console.log(chalk.gray(`       ${project.description}`))
+            console.log(chalk.green(`       Tech: ${project.technologies.join(', ')}`))
+            console.log(chalk.magenta(`       Status: ${project.status}`))
+            if (project.completed_date) {
+                console.log(chalk.yellow(`       Target: ${project.completed_date}`))
+            }
+            if (project.link) {
+                console.log(chalk.blue(`       Link: ${project.link}`))
+            }
+            console.log()
+        })
+    }
 }
 
 function displayExperience() {
@@ -159,7 +186,7 @@ async function showMainMenu() {
 
 async function showProjectDetails() {
     const projectChoices = data.projects.map(project => ({
-        name: `${project.name} - ${project.description}`,
+        name: `${project.name} (${project.category}) - ${project.status}`,
         value: project.id
     }))
     projectChoices.push({ name: '← Back to main menu', value: 'back' })
@@ -179,6 +206,7 @@ async function showProjectDetails() {
     if (project) {
         console.log()
         console.log(chalk.yellow.bold(`🚀 ${project.name}`))
+        console.log(chalk.gray(`   Category: ${project.category}`))
         console.log(chalk.white(`   ${project.description}`))
         console.log()
         console.log(chalk.cyan('   Technologies Used:'))
@@ -187,8 +215,17 @@ async function showProjectDetails() {
         })
         console.log()
         console.log(chalk.cyan(`   Status: `) + chalk.magenta(project.status))
-        if (project.link && project.link !== 'Private Repository' && project.link !== 'Coming Soon') {
+        if (project.completed_date) {
+            console.log(chalk.cyan(`   Completed: `) + chalk.yellow(project.completed_date))
+        }
+        if (project.featured) {
+            console.log(chalk.cyan(`   Featured: `) + chalk.green('✓ Yes'))
+        }
+        if (project.link) {
             console.log(chalk.cyan(`   Link: `) + chalk.blue(project.link))
+        }
+        if (project.github) {
+            console.log(chalk.cyan(`   GitHub: `) + chalk.blue(project.github))
         }
         console.log()
         
