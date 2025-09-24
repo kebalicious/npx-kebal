@@ -185,19 +185,32 @@ jobs:
       - name: Final CLI Test
         run: node cli.js --json >/dev/null
 
-      - name: Extract version from tag
+      - name: Extract version
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            # Extract version from tag (v1.0.4 -> 1.0.4)
+            VERSION=${GITHUB_REF#refs/tags/v}
+            echo "Publishing from tag v$VERSION"
+          else
+            # Extract version from package.json for branch pushes
+            VERSION=$(jq -r '.version' package.json)
+            echo "Publishing from branch, version: $VERSION"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Verify version matches package.json
+      - name: Verify version
         run: |
           PACKAGE_VERSION=$(jq -r '.version' package.json)
-          TAG_VERSION="${{ steps.version.outputs.VERSION }}"
-          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
-            echo "Version mismatch: package.json=$PACKAGE_VERSION, tag=v$TAG_VERSION"
+          EXTRACTED_VERSION="${{ steps.version.outputs.VERSION }}"
+          echo "Package.json version: $PACKAGE_VERSION"
+          echo "Extracted version: $EXTRACTED_VERSION"
+          
+          if [ "$PACKAGE_VERSION" != "$EXTRACTED_VERSION" ]; then
+            echo "Version mismatch: package.json=$PACKAGE_VERSION, extracted=$EXTRACTED_VERSION"
             exit 1
           fi
-          echo "Version verified: $PACKAGE_VERSION"
+          echo "✅ Version verified: $PACKAGE_VERSION"
 
       - name: Check NPM Token
         run: |
@@ -211,7 +224,9 @@ jobs:
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: |
+          echo "Publishing kebal@${{ steps.version.outputs.VERSION }}..."
+          npm publish --access public --tag latest
 
       - name: Verify published package
         run: |
