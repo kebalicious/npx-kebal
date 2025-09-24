@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       force_publish:
-        description: 'Force publish to npm'
+        description: "Force publish to npm"
         required: false
-        default: 'false'
+        default: "false"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -205,7 +205,7 @@ jobs:
           EXTRACTED_VERSION="${{ steps.version.outputs.VERSION }}"
           echo "Package.json version: $PACKAGE_VERSION"
           echo "Extracted version: $EXTRACTED_VERSION"
-          
+
           if [ "$PACKAGE_VERSION" != "$EXTRACTED_VERSION" ]; then
             echo "Version mismatch: package.json=$PACKAGE_VERSION, extracted=$EXTRACTED_VERSION"
             exit 1
@@ -214,18 +214,18 @@ jobs:
 
       - name: Check if version already exists
         run: |
-          PACKAGE_VERSION="${{ steps.version.outputs.VERSION }}"
-          echo "Checking if kebal@$PACKAGE_VERSION already exists on npm..."
-          
-          if npm view kebal@$PACKAGE_VERSION version >/dev/null 2>&1; then
-            npm version patch && git push origin master --tags
-            # echo "❌ Version $PACKAGE_VERSION already exists on npm!"
-            # echo "Please bump the version number before publishing."
-            # echo "Run: npm version patch && git push origin master --tags"
-            # exit 1
-          else
-            echo "✅ Version $PACKAGE_VERSION is available for publishing"
-          fi
+          npm version patch && git push origin master --tags
+           PACKAGE_VERSION="${{ steps.version.outputs.VERSION }}"
+           echo "Checking if kebal@$PACKAGE_VERSION already exists on npm..."
+           
+           if npm view kebal@$PACKAGE_VERSION version >/dev/null 2>&1; then
+             # echo "❌ Version $PACKAGE_VERSION already exists on npm!"
+             # echo "Please bump the version number before publishing."
+             # echo "Run: npm version patch && git push origin master --tags"
+             # exit 1
+           else
+             echo "✅ Version $PACKAGE_VERSION is available for publishing"
+           fi
 
       - name: Check NPM Token & User
         env:
@@ -237,13 +237,13 @@ jobs:
             exit 1
           fi
           echo "✅ NPM_TOKEN is configured"
-          
+
           echo "Checking npm user..."
           npm whoami || { echo "❌ Token authentication failed"; exit 1; }
-          
+
           echo "Checking package access..."
           npm access list packages || echo "Warning: Could not list packages"
-          
+
           echo "Checking kebal package ownership..."
           npm owner list kebal || echo "Warning: Could not check kebal ownership"
 
@@ -260,7 +260,7 @@ jobs:
           PACKAGE_VERSION="${{ steps.version.outputs.VERSION }}"
           echo "Waiting 60 seconds for NPM to propagate..."
           sleep 60
-          
+
           echo "Verifying published package exists..."
           if npm view kebal@$PACKAGE_VERSION >/dev/null 2>&1; then
             echo "✅ Package kebal@$PACKAGE_VERSION exists on npm"
@@ -268,12 +268,12 @@ jobs:
             echo "❌ Package not found on npm yet"
             exit 1
           fi
-          
+
           echo "Testing package installation and execution..."
           # Clear npx cache to ensure fresh download
           npx --yes kebal@$PACKAGE_VERSION --json >/dev/null 2>&1 || {
             echo "⚠️  npx execution failed, but package was published successfully"
             echo "This might be due to npm propagation delays"
           }
-          
+
           echo "✅ Package verification completed!"
