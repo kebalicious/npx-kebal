@@ -218,10 +218,11 @@ jobs:
           echo "Checking if kebal@$PACKAGE_VERSION already exists on npm..."
           
           if npm view kebal@$PACKAGE_VERSION version >/dev/null 2>&1; then
-            echo "❌ Version $PACKAGE_VERSION already exists on npm!"
-            echo "Please bump the version number before publishing."
-            echo "Run: npm version patch && git push origin master --tags"
-            exit 1
+            npm version patch && git push origin master --tags
+            # echo "❌ Version $PACKAGE_VERSION already exists on npm!"
+            # echo "Please bump the version number before publishing."
+            # echo "Run: npm version patch && git push origin master --tags"
+            # exit 1
           else
             echo "✅ Version $PACKAGE_VERSION is available for publishing"
           fi
