@@ -163,9 +163,15 @@ async function showMainMenu() {
     // If user selects exit, show thanks message immediately
     if (action === 'exit') {
         console.clear()
+        const centeredArt = centerText(data.asciiArt)
+        console.log(chalk.green(centeredArt))
         console.log()
-        console.log(chalk.green.bold('Thanks for checking out my profile! 👋'))
-        console.log(chalk.cyan('Feel free to reach out anytime.'))
+        const tagline = 'Full Stack Developer • Shah Alam, Malaysia'
+        console.log(chalk.cyan.bold(centerText(tagline)))
+        console.log()
+        console.log()
+        console.log(chalk.green.bold(centerText('Thanks for checking out my profile! 👋')))
+        console.log(chalk.cyan(centerText('Feel free to reach out anytime.')))
         console.log()
     }
 
