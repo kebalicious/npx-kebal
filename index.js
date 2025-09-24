@@ -178,11 +178,85 @@ async function showMainMenu() {
     return action
 }
 
+async function showProjectDetails() {
+    const projectChoices = data.projects.map(project => ({
+        name: `${project.name} (${project.category}) - ${project.status}`,
+        value: project.id
+    }))
 
+    // Add separator and back option
+    projectChoices.push(new inquirer.Separator())
+    await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'continue',
+            message: ' ',
+            choices: [
+                '← Back to previous menu'
+            ],
+            pageSize: 1
+        }
+    ])
+    projectChoices.push({ name: '← Back to previous menu', value: 'back' })
+
+    const { projectId } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'projectId',
+            message: 'Which project would you like to know more about?',
+            choices: projectChoices,
+            pageSize: 15
+        }
+    ])
+
+    if (projectId === 'back') return 'menu'
+
+    const project = data.projects.find(p => p.id === projectId)
+    if (project) {
+        console.log()
+        console.log(chalk.yellow.bold(`🚀 ${project.name}`))
+        console.log(chalk.gray(`   Category: ${project.category}`))
+        console.log(chalk.white(`   ${project.description}`))
+        console.log()
+        console.log(chalk.cyan('   Technologies Used:'))
+        project.technologies.forEach(tech => {
+            console.log(chalk.green(`     • ${tech}`))
+        })
+        console.log()
+        console.log(chalk.cyan(`   Status: `) + chalk.magenta(project.status))
+        if (project.completed_date) {
+            console.log(chalk.cyan(`   Completed: `) + chalk.yellow(project.completed_date))
+        }
+        if (project.featured) {
+            console.log(chalk.cyan(`   Featured: `) + chalk.green('✓ Yes'))
+        }
+        if (project.link) {
+            console.log(chalk.cyan(`   Link: `) + chalk.blue(project.link))
+        }
+        if (project.github) {
+            console.log(chalk.cyan(`   GitHub: `) + chalk.blue(project.github))
+        }
+        console.log()
+
+        // Wait for user to read the details before continuing
+        await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'continue',
+                message: ' ',
+                choices: [
+                    '← Back to previous menu'
+                ],
+                pageSize: 1
+            }
+        ])
+    }
+    return 'projects'
+}
 
 async function runInteractiveMode() {
     let currentView = 'menu'
-    
+
     while (currentView !== 'exit') {
         switch (currentView) {
             case 'menu':
@@ -192,37 +266,86 @@ async function runInteractiveMode() {
             case 'projects':
                 displayHeader()
                 displayProjects()
-                await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
-                currentView = 'menu'
+                currentView = await showProjectDetails()
                 break
             case 'experience':
                 displayHeader()
                 displayExperience()
-                await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
+                await inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'continue',
+                        message: ' ',
+                        choices: [
+                            '← Back to previous menu'
+                        ],
+                        pageSize: 1
+                    }
+                ])
                 currentView = 'menu'
                 break
             case 'education':
                 displayHeader()
                 displayEducation()
-                await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
+                await inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'continue',
+                        message: ' ',
+                        choices: [
+                            '← Back to previous menu'
+                        ],
+                        pageSize: 1
+                    }
+                ])
                 currentView = 'menu'
                 break
             case 'skills':
                 displayHeader()
                 displaySkills()
-                await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
+                await inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'continue',
+                        message: ' ',
+                        choices: [
+                            '← Back to previous menu'
+                        ],
+                        pageSize: 1
+                    }
+                ])
                 currentView = 'menu'
                 break
             case 'about':
                 displayHeader()
                 displayAboutMe()
-                await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
+                await inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'continue',
+                        message: ' ',
+                        choices: [
+                            '← Back to previous menu'
+                        ],
+                        pageSize: 1
+                    }
+                ])
                 currentView = 'menu'
                 break
             case 'interests':
                 displayHeader()
                 displayInterests()
-                await inquirer.prompt([{ type: 'input', name: 'continue', message: 'Press Enter to continue...' }])
+                await inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'continue',
+                        message: ' ',
+                        choices: [
+                            '← Back to previous menu'
+                        ],
+                        pageSize: 1
+                    }
+                ])
                 currentView = 'menu'
                 break
             case 'exit':
