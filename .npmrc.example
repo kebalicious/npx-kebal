@@ -1,0 +1,10 @@
+# Example .npmrc file for GitHub Packages
+# Copy this file to .npmrc and replace YOUR_TOKEN with your actual GitHub Personal Access Token
+
+@kebalicious:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN_HERE
+
+# Instructions:
+# 1. Copy this file: cp .npmrc.example .npmrc
+# 2. Replace YOUR_TOKEN_HERE with your GitHub Personal Access Token
+# 3. The .npmrc file is already in .gitignore to prevent accidental commits
