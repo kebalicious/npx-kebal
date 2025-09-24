@@ -212,7 +212,9 @@ jobs:
           fi
           echo "✅ Version verified: $PACKAGE_VERSION"
 
-      - name: Check NPM Token
+      - name: Check NPM Token & User
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
             echo "❌ NPM_TOKEN secret is not set!"
@@ -220,6 +222,15 @@ jobs:
             exit 1
           fi
           echo "✅ NPM_TOKEN is configured"
+          
+          echo "Checking npm user..."
+          npm whoami || { echo "❌ Token authentication failed"; exit 1; }
+          
+          echo "Checking package access..."
+          npm access list packages || echo "Warning: Could not list packages"
+          
+          echo "Checking kebal package ownership..."
+          npm owner list kebal || echo "Warning: Could not check kebal ownership"
 
       - name: Publish
         env:
