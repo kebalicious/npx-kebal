@@ -171,7 +171,7 @@ async function showMainMenu() {
         console.log()
         console.log()
         console.log(chalk.green.bold(centerText('Thanks for checking out my profile! 👋')))
-        console.log(chalk.cyan(centerText('Feel free to reach out anytime.')))
+        console.log(chalk.cyan(centerText('Have a wonderful day.')))
         console.log()
     }
 
