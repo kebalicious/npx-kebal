@@ -226,6 +226,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           echo "Publishing kebal@${{ steps.version.outputs.VERSION }}..."
+          echo "Note: If this fails with OTP error, you need an Automation token from npmjs.com"
           npm publish --access public --tag latest
 
       - name: Verify published package
