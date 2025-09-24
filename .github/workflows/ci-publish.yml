@@ -193,6 +193,15 @@ jobs:
           fi
           echo "Version verified: $PACKAGE_VERSION"
 
+      - name: Check NPM Token
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "❌ NPM_TOKEN secret is not set!"
+            echo "Please add NPM_TOKEN to repository secrets"
+            exit 1
+          fi
+          echo "✅ NPM_TOKEN is configured"
+
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
